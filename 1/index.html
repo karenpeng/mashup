@@ -1,0 +1,125 @@
+<html>
+  <head>
+    <style type="text/css">
+      #wrap{
+        width:880px;
+        margin:10px auto;
+      }
+      p, form{
+        display:inline;
+      }
+      button{
+        display:block;
+        margin: 20px auto 10px auto;
+      }
+      img{
+        width:60px;
+      }
+    </style>
+ <!--   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function(){
+      function foo(response) {
+       var data = response.data;
+       console.log(data);
+      }
+      console.log("ohmyladygaga");
+      var script = document.createElement('script');
+
+      $("#check").click(function(){
+          script.src = 'https://api.github.com/users?q=' + $("#selection").val() + ':' + $("#typing").val()+ '&sort='+ $("#sorting").val() + '&callback=foo&per_page=10';
+          console.log(script);
+      });
+
+      document.getElementsByTagName('head')[0].appendChild(script);
+    });
+    </script>-->
+
+  </head>
+
+  <body>
+    <h1>Geek Search</h1>
+    <div id="wrap">
+    <p>I'd like to search github user according to
+      <select id="selection">
+        <option value="location">Location</option>
+        <option value="language">Programming Language</option>
+    </select>
+    as
+    </p>
+    <form>
+      <input id="typing" type="input" placeholder="New York">
+    </form>
+    <p>, and sort based on
+      <select id="sorting">
+        <option value="repos">number of repositories</option>
+        <option value="followers">number of followers</option>
+    </select>
+    .
+    </p>
+  </div>
+    <button id="check" type="button">Check it Out!</button>
+    <div id="result"></div>
+  </body>
+
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+    <script type="text/javascript">
+    var content;
+    // Using YQL and JSONP
+    $("#check").click(function(){
+      $("#result").empty();
+      $.ajax({
+        url: 'https://api.github.com/search/users?q=' + $("#selection").val() + ':' + $("#typing").val()+ '&sort='+ $("#sorting").val() + '&order=desc&callback=foo&per_page=172',
+
+        jsonp: "callback",
+
+        dataType: "jsonp",
+
+        data: {
+          format: "json"
+        },
+
+        success: function ( response ) {
+          var data = response.data;
+          console.log(data);
+          var value = data.items;
+          for(var i =0; i<value.length; i++){
+            content = '<a href=' +' " '+ value[i].html_url + ' ">' + '<img src=' + ' " '+ value[i].avatar_url + ' " ' + ' ' + 'alt=" ' + value[i].login + ' ">' + '</a>';
+
+            $("#result").append(content);
+            console.log("ok");
+          }
+        }
+      });
+    });
+/*
+      var content;
+      function foo(response) {
+       var data = response.data;
+       var value = data.items;
+       console.log(script);
+       for(var i =0; i<value.length; i++){
+          content = '<a href=' +' " '+ value[i].html_url + ' ">' + '<img src=' + ' " '+ value[i].avatar_url + ' " ' + ' ' + 'alt=" ' + value[i].login + ' ">' + '</a>';
+          //if(content != undefined){
+            $("#result").append(content);
+            //console.log(content);
+            console.log("ok");
+         // }
+        }
+      }
+
+      var script = document.createElement('script');
+
+      $("#check").click(function(){
+          $("#result").innerHTML = "";
+          content = null;
+          script.src = "";
+          script.src = 'https://api.github.com/search/users?q=' + $("#selection").val() + ':' + $("#typing").val()+ '&sort='+ $("#sorting").val() + '&order=desc&callback=foo&per_page=172';
+          console.log(script);
+      });
+
+      document.getElementsByTagName('head')[0].appendChild(script);
+*/
+    </script>
+
+</html>
