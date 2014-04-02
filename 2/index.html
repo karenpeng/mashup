@@ -1,37 +1,37 @@
 <html>
   <head>
-    <link rel="stylesheet" href="http://yandex.st/highlightjs/8.0/styles/default.min.css">
+    <!--<link rel="stylesheet" href="http://yandex.st/highlightjs/8.0/styles/default.min.css">-->
+    <!--<link rel="stylesheet" href="githubtheme.css" type="text/css">-->
+    <link rel="stylesheet" href="tomorrownight.css" type="text/css">
     <style type="text/css">
       html,body{
         margin: 0;
         padding: 0;
         top: 0;
         left: 0;
+        background-color: black;
+        color: white;
       }
-      form{
-        display: block;
-        width: 124px;
-        margin: 10px auto;
-      }
-      button{
-        display:block;
-        margin: 20px auto 10px auto;
+      input{
+        background: none;
+        border: 0;
+        width: 100%;
+        color: white;
       }
     </style>
 
   </head>
 
   <body>
-    <h1>Code Search</h1>
     <form>
-      <input id="typing" type="input" placeholder="key word">
+      <input id="kw" type="input" placeholder="Type in any key word in code here, and then press enter.">
     </form>
-    <button id="check" type="button">Check it Out!</button>
     <pre><code id="result"></code></pre>
   </body>
 
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
   <script type="text/javascript" src="base64.js"></script>
+  <!--<script type="text/javascript" src="rainbow-custom.min.js"></script>-->
   <script src="http://yandex.st/highlightjs/8.0/highlight.min.js"></script>
   <script type="text/javascript">
     hljs.initHighlightingOnLoad();
@@ -40,49 +40,55 @@
   <script type="text/javascript">
     var content;
     // Using YQL and JSONP
-    $("#check").click(function(){
-      //$("#result").empty();
-      $.ajax({
-        url: 'https://api.github.com/search/code?q=' + $("#typing").val() + '+in:file+language:js+repo:jquery/jquery',
+    $(window).keydown(function (event) {
+      if (event.which === 13) {
+        event.preventDefault();
+        //$("#result").empty();
+        $.ajax({
+          url: 'https://api.github.com/search/code?q=' + $("#kw").val() + '+in:file+language:js+repo:jquery/jquery',
 
-        jsonp: "callback",
+          jsonp: "callback",
 
-        dataType: "jsonp",
+          dataType: "jsonp",
 
-        data: {
-          format: "json"
-        },
+          data: {
+            format: "json"
+          },
 
-        success: function ( response ) {
-          var data = response.data;
-          console.log(1,data);
-          if(data.items.length>0){
-            var item = data.items[0];
-            //data.forEach(function(item){
-              $.ajax({
-                url: item.url,
+          success: function ( response ) {
+            var data = response.data;
+            console.log(1,data);
+            if(data.items.length>0){
+              var item = data.items[0];
+              //data.forEach(function(item){
+                $.ajax({
+                  url: item.url,
 
-                jsonp: "callback",
+                  jsonp: "callback",
 
-                dataType: "jsonp",
+                  dataType: "jsonp",
 
-                data: {
-                  format: "json"
-                },
+                  data: {
+                    format: "json"
+                  },
 
-                success: function ( response ) {
-                  //do something
-                  var data2 = response.data;
-                  console.log(2,data2.content);
-                  var wat = Base64.decode(data2.content);
-                  $("#result").html(wat);
-                  $('pre code').each(function(i, e) {hljs.highlightBlock(e)});
-                }
-            });
-          //});
+                  success: function ( response ) {
+                    //do something
+                    var data2 = response.data;
+                    console.log(2,data2.content);
+                    var wat = Base64.decode(data2.content);
+                    var kw = $("#kw").val();
+                    var found = wat.match(/kw/g);
+                    $("#result").html(wat);
+                    $("#result").each(function(i, e) {hljs.highlightBlock(e)});
+
+                  }
+              });
+            //});
+          }
         }
-      }
-    });
+      });
+    }
   });
   </script>
 
